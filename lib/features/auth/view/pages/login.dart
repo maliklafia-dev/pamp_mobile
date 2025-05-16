@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pamp_mobile/core/theme/app_pallete.dart';
 import 'package:pamp_mobile/features/auth/view/widgets/GoogleSignInButton.dart';
 import 'package:pamp_mobile/features/auth/viewmodel/auth_viewmodel.dart';
-import 'package:pamp_mobile/features/projects/view/pages/project.dart';
+import 'package:pamp_mobile/features/projects/view/pages/project_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
