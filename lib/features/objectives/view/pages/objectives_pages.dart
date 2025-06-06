@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class ObjectivesPage extends StatelessWidget {
   const ObjectivesPage({super.key});
 
@@ -16,21 +15,31 @@ class ObjectivesPage extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildObjectiveItem('voir les projets et les noter,'),
-            _buildObjectiveItem('suivre les livrables,'),
-            _buildObjectiveItem('lire les rapports'),
+            ObjectiveItem(text: 'voir les projets et les noter,'),
+            ObjectiveItem(text: 'suivre les livrables,'),
+            ObjectiveItem(text: 'lire les rapports'),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildObjectiveItem(String text) {
+class ObjectiveItem extends StatelessWidget {
+  final String text;
+
+  const ObjectiveItem({
+    super.key,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(

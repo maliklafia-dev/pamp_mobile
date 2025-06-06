@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pamp_mobile/core/theme/app_pallete.dart';
+import '../../../core/theme/app_pallete.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -35,10 +35,16 @@ class GoogleSignInButton extends StatelessWidget {
                 ),
               )
             else ...[
-              Image.asset(
-                'assets/images/google_logo.png',
+              Container(
                 height: 20,
                 width: 20,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/google_logo.png',
+                    width: 16,
+                    height: 16,
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               const Text(

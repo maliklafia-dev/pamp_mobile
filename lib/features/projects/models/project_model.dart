@@ -1,35 +1,47 @@
 class ProjectModel {
-  final String id;
-  final String name;
-  final String promotion;
-  final DateTime deadline;
-  final bool hasDeliverables;
+  final String projectId;
+  final String projectName;
+  final String? projectDescription;
+  final bool isProjectPublished;
+  final String? linkedStudentBatchId;
+  final DateTime? projectCreatedAt;
+  final DateTime? projectUpdatedAt;
 
   ProjectModel({
-    required this.id,
-    required this.name,
-    required this.promotion,
-    required this.deadline,
-    this.hasDeliverables = true,
+    required this.projectId,
+    required this.projectName,
+    this.projectDescription,
+    this.isProjectPublished = false,
+    this.linkedStudentBatchId,
+    this.projectCreatedAt,
+    this.projectUpdatedAt,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
     return ProjectModel(
-      id: json['id'],
-      name: json['name'],
-      promotion: json['promotion'],
-      deadline: DateTime.parse(json['deadline']),
-      hasDeliverables: json['hasDeliverables'] ?? true,
+      projectId: json['id']?.toString() ?? '',
+      projectName: json['name'] ?? '',
+      projectDescription: json['description'],
+      isProjectPublished: json['isPublished'] ?? false,
+      linkedStudentBatchId: json['studentBatchId']?.toString(),
+      projectCreatedAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      projectUpdatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'promotion': promotion,
-      'deadline': deadline.toIso8601String(),
-      'hasDeliverables': hasDeliverables,
+      'id': projectId,
+      'name': projectName,
+      'description': projectDescription,
+      'isPublished': isProjectPublished,
+      'studentBatchId': linkedStudentBatchId,
+      'createdAt': projectCreatedAt?.toIso8601String(),
+      'updatedAt': projectUpdatedAt?.toIso8601String(),
     };
   }
 }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:pamp_mobile/features/auth/model/userModel.dart';
+import '../models/auth_response.dart';
+import '../models/login_request.dart';
+import '../services/auth_service.dart';
 
 class AuthViewModel extends ChangeNotifier {
+  final AuthService _authService = AuthService();
+
   bool _isLoading = false;
-  UserModel? _user;
+  UserData? _user;
   String? _error;
 
   bool get isLoading => _isLoading;
-  UserModel? get user => _user;
+  UserData? get user => _user;
   String? get error => _error;
   bool get isAuthenticated => _user != null;
 
@@ -16,7 +20,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(UserModel? user) {
+  void setUser(UserData? user) {
     _user = user;
     notifyListeners();
   }
@@ -26,26 +30,41 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> checkAuthStatus() async {
+    setLoading(true);
+
+    try {
+      final isLoggedIn = await _authService.isLoggedIn();
+      if (isLoggedIn) {
+        final response = await _authService.getCurrentUser();
+        if (response.isSuccess && response.data != null) {
+          setUser(response.data);
+        } else {
+          // Token might be expired, logout
+          await _authService.logout();
+        }
+      }
+    } catch (e) {
+      setError('Failed to check authentication status');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   Future<bool> loginWithEmail(String email, String password) async {
     setLoading(true);
     setError(null);
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      final request = LoginRequest(email: email, password: password);
+      final response = await _authService.loginTeacher(request);
 
-      // For demo purposes, accept any non-empty email/password
-      if (email.isNotEmpty && password.isNotEmpty) {
-        final user = UserModel(
-          id: '1',
-          email: email,
-          name: 'Test User',
-        );
-        setUser(user);
+      if (response.isSuccess && response.data != null) {
+        setUser(response.data!.user);
         setLoading(false);
         return true;
       } else {
-        setError('Invalid email or password');
+        setError(response.error ?? 'Login failed');
         setLoading(false);
         return false;
       }
@@ -61,21 +80,42 @@ class AuthViewModel extends ChangeNotifier {
     setError(null);
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      final response = await _authService.initiateGoogleLogin();
 
-      final user = UserModel(
-        id: '2',
-        email: 'google@example.com',
-        name: 'Google User',
-        photoUrl: 'https://example.com/avatar.jpg',
-      );
-
-      setUser(user);
-      setLoading(false);
-      return true;
+      if (response.isSuccess && response.data != null) {
+        await _authService.launchGoogleLogin(response.data!);
+        setLoading(false);
+        return true;
+      } else {
+        setError(response.error ?? 'Google login failed');
+        setLoading(false);
+        return false;
+      }
     } catch (e) {
       setError('An error occurred with Google Sign-In. Please try again.');
+      setLoading(false);
+      return false;
+    }
+  }
+
+  Future<bool> handleGoogleCallback(Map<String, String> params) async {
+    setLoading(true);
+    setError(null);
+
+    try {
+      final response = await _authService.handleGoogleCallback(params);
+
+      if (response.isSuccess && response.data != null) {
+        setUser(response.data!.user);
+        setLoading(false);
+        return true;
+      } else {
+        setError(response.error ?? 'Google login callback failed');
+        setLoading(false);
+        return false;
+      }
+    } catch (e) {
+      setError('An error occurred during Google authentication.');
       setLoading(false);
       return false;
     }
@@ -85,8 +125,7 @@ class AuthViewModel extends ChangeNotifier {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+      await _authService.logout();
       setUser(null);
     } catch (e) {
       setError('An error occurred during logout. Please try again.');

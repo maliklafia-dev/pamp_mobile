@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/theme/theme.dart';
-import 'features/auth/view/pages/login.dart';
-import 'features/auth/viewmodel/auth_viewmodel.dart';
+import 'core/theme/app_theme.dart';
 import 'features/deliverables/viewmodel/deliverable_viewmodel.dart';
-import 'features/projects/viewmodel/project_viewmodel.dart';
+import 'features/projects/viewmodel/project_management_viewmodel.dart';
 import 'features/reports/viewmodel/reports_viewmodel.dart';
+import 'features/students_promotions/viewmodel/student_batch_viewmodel.dart';
+import 'features/teacher_auth/view/pages/splash_page.dart';
+import 'features/teacher_auth/viewmodel/teacher_authentication_viewmodel.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,23 +14,23 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ProjectsViewModel()),
-          ChangeNotifierProvider(create: (_) => DeliverablesViewModel()),
-          ChangeNotifierProvider(create: (_) => ReportsViewModel()),
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+      providers: [
+        ChangeNotifierProvider(create: (_) => TeacherAuthenticationViewModel()),
+        ChangeNotifierProvider(create: (_) => StudentBatchViewModel()),
+        ChangeNotifierProvider(create: (_) => ProjectManagementViewModel()),
+        ChangeNotifierProvider(create: (_) => ReportsViewModel()),
+        ChangeNotifierProvider(create: (_) => DeliverablesViewModel()),
       ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: AppTheme.lightTheme,
-          home: const LoginPage(),
-      )
+      child: MaterialApp(
+        title: 'PAMP - Teacher Dashboard',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        home: const SplashPage(),
+      ),
     );
   }
-}
-
-class NotesViewModel {
 }

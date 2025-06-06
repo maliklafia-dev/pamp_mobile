@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pamp_mobile/features/deliverables/view/widgets/deliverable_card.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../core/theme/app_pallete.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/bottom_navigation_widget.dart';
 import '../../viewmodel/deliverable_viewmodel.dart';
+import '../widgets/deliverable_card.dart';
 
 class DeliverablesPage extends StatefulWidget {
   final String promotion;
@@ -23,29 +24,13 @@ class DeliverablesPage extends StatefulWidget {
 }
 
 class _DeliverablesPageState extends State<DeliverablesPage> {
-  int _selectedIndex = 1; // Projects tab selected by default
-
   @override
   void initState() {
     super.initState();
-    // Fetch deliverables when the page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DeliverablesViewModel>(context, listen: false)
           .fetchDeliverables(widget.promotion);
     });
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    // Handle navigation based on the selected tab
-    if (index == 0) {
-      // Navigate to Notations
-    } else if (index == 2) {
-      // Navigate to Profile
-    }
   }
 
   @override
@@ -103,7 +88,7 @@ class _DeliverablesPageState extends State<DeliverablesPage> {
                     onPressed: () {
                       viewModel.fetchDeliverables(widget.promotion);
                     },
-                    child: const Text('Retry'),
+                    child: const Text('Réessayer'),
                   ),
                 ],
               ),
@@ -129,24 +114,7 @@ class _DeliverablesPageState extends State<DeliverablesPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.edit_note),
-            label: 'Notations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: 'Projects',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: const BottomNavigationWidget(currentIndex: 1),
     );
   }
 }

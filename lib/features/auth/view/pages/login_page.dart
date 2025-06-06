@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:pamp_mobile/core/theme/app_pallete.dart';
-import 'package:pamp_mobile/features/auth/view/widgets/GoogleSignInButton.dart';
-import 'package:pamp_mobile/features/auth/viewmodel/auth_viewmodel.dart';
-import 'package:pamp_mobile/features/projects/view/pages/project_page.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/theme/app_pallete.dart';
+import '../../../projects/view/pages/project_page.dart';
+import '../../../teacher_auth/widget/google_sign_in_button.dart';
+import '../../viewmodel/auth_viewmodel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -58,7 +58,6 @@ class _LoginPage extends State<LoginPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AuthViewModel>(context);
@@ -75,7 +74,7 @@ class _LoginPage extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Logo and app name
-                  Column(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
@@ -84,13 +83,10 @@ class _LoginPage extends State<LoginPage> {
                           color: AppPalette.yellow,
                           shape: BoxShape.circle,
                         ),
-                        child:
-                          Image.asset(
-                            'assets/icons/app_logo.png',
-                            height: 48,
-                            width: 48,
-                          )
-                        //const Icon(Icons.add, size: 24),
+                        child: const ImageIcon(
+                          AssetImage('assets/icons/app_logo.png'),
+                          size: 42,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       const Text(

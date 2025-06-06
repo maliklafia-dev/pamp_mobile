@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pamp_mobile/core/theme/app_pallete.dart';
+import '../../../../core/theme/app_pallete.dart';
 
 class DeliverableCard extends StatelessWidget {
   final String groupName;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pamp_mobile/core/theme/app_pallete.dart';
-import 'package:pamp_mobile/features/reports/viewmodel/reports_viewmodel.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/theme/app_pallete.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/bottom_navigation_widget.dart';
+import '../../viewmodel/reports_viewmodel.dart';
 import '../widget/report_card.dart';
 
 class ReportsPage extends StatefulWidget {
@@ -22,29 +24,13 @@ class ReportsPage extends StatefulWidget {
 }
 
 class _ReportsPageState extends State<ReportsPage> {
-  int _selectedIndex = 1; // Projects tab selected by default
-
   @override
   void initState() {
     super.initState();
-    // Fetch reports when the page loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ReportsViewModel>(context, listen: false)
           .fetchReports(widget.promotion);
     });
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    // Handle navigation based on the selected tab
-    if (index == 0) {
-      // Navigate to Notations
-    } else if (index == 2) {
-      // Navigate to Profile
-    }
   }
 
   @override
@@ -102,7 +88,7 @@ class _ReportsPageState extends State<ReportsPage> {
                     onPressed: () {
                       viewModel.fetchReports(widget.promotion);
                     },
-                    child: const Text('Retry'),
+                    child: const Text('Réessayer'),
                   ),
                 ],
               ),
@@ -131,24 +117,7 @@ class _ReportsPageState extends State<ReportsPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.edit_note),
-            label: 'Notations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder),
-            label: 'Projects',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: const BottomNavigationWidget(currentIndex: 1),
     );
   }
 }

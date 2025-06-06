@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pamp_mobile/features/reports/models/report_model.dart';
+import '../models/report_model.dart';
 
 class ReportsViewModel extends ChangeNotifier {
   bool _isLoading = false;
@@ -73,12 +73,10 @@ class ReportsViewModel extends ChangeNotifier {
   Future<void> readReport(String reportId) async {
     // Implement read report functionality
     await Future.delayed(const Duration(seconds: 1));
-    // This would typically open a report detail page or download a file
   }
 
   Future<void> giveNote(String reportId) async {
     // Implement give note functionality
     await Future.delayed(const Duration(seconds: 1));
-    // This would typically open a form to add a note
   }
 }
