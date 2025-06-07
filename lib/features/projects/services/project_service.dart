@@ -11,19 +11,32 @@ class ProjectService {
   final PampApiClient _apiClient = PampApiClient();
 
   Future<ApiResponse<List<ProjectModel>>> getAllProjects() async {
+
     final response = await _apiClient.getFromProjectsService<List<dynamic>>(
       ApiEndpoints.projects,
       requiresAuthentication: true,
     );
 
+    print('API Response isSuccess: ${response.isSuccess}');
+    print('API Response Error: ${response.error}');
+    print('API Response Data Type: ${response.data?.runtimeType}');
+    print('API Response Data Raw: ${response.data}');
+
     if (response.isSuccess && response.data != null) {
       final projects = (response.data as List<dynamic>)
-          .map((json) => ProjectModel.fromJson(json as Map<String, dynamic>))
+          .map((jsonItem) {
+        if (jsonItem is Map<String, dynamic>) {
+          return ProjectModel.fromJson(jsonItem);
+        } else {
+          print('Warning: Item in project list is not a Map: $jsonItem');
+          throw FormatException('Invalid item format in project list');
+        }
+      })
           .toList();
       return ApiResponse.success(projects);
     }
 
-    return ApiResponse.error(response.error ?? 'Failed to fetch projects');
+    return ApiResponse.error(response.error ?? 'Failed to fetch projects (data was null or request failed)');
   }
 
   Future<ApiResponse<List<ProjectModel>>> getProjectsByStudentBatch(String studentBatchId) async {

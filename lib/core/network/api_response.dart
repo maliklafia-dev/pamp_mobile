@@ -2,11 +2,13 @@ class ApiResponse<T> {
   final T? data;
   final String? error;
   final bool isSuccess;
+  final int? statusCode;
 
-  ApiResponse._({
+  ApiResponse._( {
     this.data,
     this.error,
     required this.isSuccess,
+    this.statusCode,
   });
 
   factory ApiResponse.success(T data) {
@@ -17,9 +19,6 @@ class ApiResponse<T> {
   }
 
   factory ApiResponse.error(String error) {
-    return ApiResponse._(
-      error: error,
-      isSuccess: false,
-    );
+    return ApiResponse._(error: error, isSuccess: false);
   }
 }

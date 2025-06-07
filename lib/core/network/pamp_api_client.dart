@@ -105,22 +105,40 @@ class PampApiClient {
     }
   }
 
-  ApiResponse<T> _processResponse<T>(
-      http.Response response,
-      T Function(Map<String, dynamic>)? fromJson,
+  ApiResponse<T> _processResponse<T>(http.Response response,
+      T Function(Map<String, dynamic>)? fromJsonSingle,
       ) {
     try {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final dynamic decodedJson = jsonDecode(response.body);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        if (fromJson != null) {
-          return ApiResponse.success(fromJson(responseData));
+        if (fromJsonSingle != null) {
+
+          if (decodedJson is Map<String, dynamic>) {
+            return ApiResponse.success(fromJsonSingle(decodedJson));
+          } else {
+            return ApiResponse.error('Response was not a JSON object as expected by fromJson.');
+          }
         } else {
-          return ApiResponse.success(responseData as T);
+
+          if (decodedJson is T) {
+            return ApiResponse.success(decodedJson);
+          } else {
+
+            try {
+              return ApiResponse.success(decodedJson as T);
+            } catch (castError) {
+              return ApiResponse.error('Failed to cast response to expected type T. Decoded type: ${decodedJson.runtimeType}, Expected type: $T. Error: $castError');
+            }
+          }
         }
       } else {
-        final errorMessage = responseData['message'] ?? 'Unknown error occurred';
-        return ApiResponse.error(errorMessage);
+        if (decodedJson is Map<String, dynamic>) {
+          final errorMessage = decodedJson['message'] as String? ?? decodedJson.toString();
+          return ApiResponse.error(errorMessage);
+        } else {
+          return ApiResponse.error(response.body.isNotEmpty ? response.body : 'Unknown error occurred');
+        }
       }
     } catch (e) {
       return ApiResponse.error('Failed to parse response: ${e.toString()}');

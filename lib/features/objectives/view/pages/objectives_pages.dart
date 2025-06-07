@@ -20,9 +20,7 @@ class ObjectivesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ObjectiveItem(text: 'voir les projets et les noter,'),
-            ObjectiveItem(text: 'suivre les livrables,'),
-            ObjectiveItem(text: 'lire les rapports'),
+            ObjectiveItem(text: ''),
           ],
         ),
       ),

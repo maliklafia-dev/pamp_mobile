@@ -16,13 +16,40 @@ class StudentBatchModel {
   });
 
   factory StudentBatchModel.fromJson(Map<String, dynamic> json) {
+    List<String> parsedTags = [];
+    final dynamic tagsData = json['tags']; // Récupérer la valeur de 'tags'
+
+    if (tagsData is String) {
+
+      if (tagsData.isNotEmpty) {
+        parsedTags = tagsData
+            .split(',')
+            .map((tag) => tag.trim())
+            .where((tag) => tag.isNotEmpty)
+            .toList();
+      }
+
+    } else if (tagsData is List) {
+
+      parsedTags = List<String>.from(tagsData.map((item) => item.toString()));
+    }
+
+    List<String> parsedStudentIds = [];
+    final dynamic studentsData = json['students'];
+    if (studentsData is List) {
+      parsedStudentIds = List<String>.from(studentsData.map((item) => item.toString()));
+    }
+
+
     return StudentBatchModel(
       studentBatchId: json['id']?.toString() ?? '',
       studentBatchName: json['name'] ?? '',
-      studentBatchState: json['state'],
-      studentBatchTags: List<String>.from(json['tags'] ?? []),
-      studentIds: List<String>.from(json['students'] ?? []),
-      associatedProjectId: json['projectId']?.toString(),
+      studentBatchState: json['state'] as String?,
+      studentBatchTags: parsedTags,
+      studentIds: parsedStudentIds,
+      associatedProjectId: json['projects'] is List && (json['projects'] as List).isNotEmpty
+          ? ((json['projects'] as List)[0] as Map<String, dynamic>)['id']?.toString()
+          : null,
     );
   }
 
