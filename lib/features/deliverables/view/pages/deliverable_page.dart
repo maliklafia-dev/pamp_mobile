@@ -16,7 +16,7 @@ class DeliverablesPage extends StatefulWidget {
     super.key,
     required this.promotion,
     required this.projectName,
-    required this.deadline,
+    required this.deadline, required String groupName,
   });
 
   @override

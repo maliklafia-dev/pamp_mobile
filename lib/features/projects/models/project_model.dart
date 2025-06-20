@@ -1,3 +1,5 @@
+import 'group_model.dart'; // <<< IMPORTER LE NOUVEAU MODÈLE
+
 class ProjectModel {
   final String projectId;
   final String projectName;
@@ -6,6 +8,7 @@ class ProjectModel {
   final String? linkedStudentBatchId;
   final DateTime? projectCreatedAt;
   final DateTime? projectUpdatedAt;
+  final List<GroupModel> groups; // <<< AJOUTER LA LISTE DES GROUPES
 
   ProjectModel({
     required this.projectId,
@@ -15,21 +18,38 @@ class ProjectModel {
     this.linkedStudentBatchId,
     this.projectCreatedAt,
     this.projectUpdatedAt,
+    this.groups = const [], // <<< VALEUR PAR DÉFAUT
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
+    String? batchId;
+    final dynamic studentBatchData = json['studentBatch'];
+    if (studentBatchData is Map<String, dynamic>) {
+      batchId = studentBatchData['id']?.toString();
+    }
+
+    List<GroupModel> parsedGroups = [];
+    final dynamic groupsData = json['groups']; // <<< RÉCUPÉRER LES DONNÉES DES GROUPES
+    if (groupsData is List) {
+      parsedGroups = groupsData
+          .where((groupJson) => groupJson is Map<String, dynamic>)
+          .map((groupJson) => GroupModel.fromJson(groupJson as Map<String, dynamic>))
+          .toList();
+    }
+
     return ProjectModel(
       projectId: json['id']?.toString() ?? '',
       projectName: json['name'] ?? '',
-      projectDescription: json['description'],
-      isProjectPublished: json['isPublished'] ?? false,
-      linkedStudentBatchId: json['studentBatchId']?.toString(),
-      projectCreatedAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
+      projectDescription: json['description'] as String?,
+      isProjectPublished: (json['isPublished'] as bool?) ?? false,
+      linkedStudentBatchId: batchId,
+      projectCreatedAt: json['createdAt'] != null && json['createdAt'] is String
+          ? DateTime.tryParse(json['createdAt'] as String)
           : null,
-      projectUpdatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'])
+      projectUpdatedAt: json['updatedAt'] != null && json['updatedAt'] is String
+          ? DateTime.tryParse(json['updatedAt'] as String)
           : null,
+      groups: parsedGroups, // <<< ASSIGNER LES GROUPES PARSÉS
     );
   }
 
@@ -39,9 +59,11 @@ class ProjectModel {
       'name': projectName,
       'description': projectDescription,
       'isPublished': isProjectPublished,
-      'studentBatchId': linkedStudentBatchId,
       'createdAt': projectCreatedAt?.toIso8601String(),
       'updatedAt': projectUpdatedAt?.toIso8601String(),
+      'groups': groups.map((group) => group.toJson()).toList(), // <<< SÉRIALISER LES GROUPES
+      // Note: linkedStudentBatchId est généralement géré différemment pour la sérialisation vers l'API
+      // 'studentBatch': linkedStudentBatchId != null ? {'id': linkedStudentBatchId} : null,
     };
   }
 }

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_pallete.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/bottom_navigation_widget.dart';
 import '../../../objectives/view/pages/objectives_pages.dart';
 import '../../../students_promotions/viewmodel/student_batch_viewmodel.dart';
@@ -117,15 +116,16 @@ class _ProjectsPageState extends State<ProjectsPage> {
                         ),
                       )
                     else
-                      ...batchProjects.map((project) => Padding(
+                      ...batchProjects.map((project) => Padding( // Si vous utilisez l'approche actuelle
+                        // ... ou ...batch.projects.map((project) => Padding( // Si vous utilisez l'approche alternative
                         padding: const EdgeInsets.only(bottom: 8),
                         child: ProjectCard(
-                          promotion: batch.studentBatchName,
-                          projectName: project.projectName,
+                          promotion: 'Promotion : ' + batch.studentBatchName,
+                          project: project, // <<< PASSER L'OBJET PROJET COMPLET
                           deadline: project.projectCreatedAt != null
                               ? DateFormat('dd/MM/yy').format(project.projectCreatedAt!)
                               : 'Non définie',
-                          hasDeliverables: true,
+                          // hasDeliverables: true, // N'est plus nécessaire ici
                         ),
                       )),
                   ],
